@@ -1,92 +1,75 @@
-// STUDENT OBJECT TEMPLATE
-function createStudent(name, family, age, scores, birth) {
-  return {
-    name,
-    family,
-    age,
-    scores,
-    birth,
-
-    getFullName: function () {
-      return this.family + " " + this.name;
-    },
-
-    getBirthDay: function () {
-      return `${this.birth.day}/${this.birth.month}/${this.birth.year}`;
-    },
-
-    getAVGScore: function () {
-      return (
-        this.scores.reduce(function (sum, e) {
-          return sum + e;
-        }, 0) / this.scores.length
-      );
-    },
-  };
+// Câu 1 khai báo hàm tạo
+function Product(id, name, price, quantity, category, isAvailable) {
+  this.id = id;
+  this.name = name;
+  this.price = price;
+  this.quantity = quantity;
+  this.category = category;
+  this.isAvailable = isAvailable;
 }
 
-// OBJECT 1
-let student1 = createStudent("Tung", "Nguyen", 18, [9, 10, 8], {
-  year: 2008,
-  month: 11,
-  day: 1,
-});
+// Câu 2 khởi tạo mảng products
+const products = [
+  new Product(1, "MacBook Pro", 35000000, 5, "Laptop", true),
+  new Product(2, "iPhone 15", 32000000, 0, "Phone", true),
+  new Product(3, "AirPods Pro", 6000000, 10, "Accessories", true),
+  new Product(4, "Magic Mouse", 3000000, 7, "Accessories", false),
+  new Product(5, "iPad Pro", 28000000, 3, "Tablet", true),
+  new Product(6, "Apple Watch", 12000000, 8, "Accessories", true),
+];
 
-// OBJECT 2
-let student2 = createStudent("Lan", "Tran", 20, [8, 7, 9], {
-  year: 2006,
-  month: 5,
-  day: 12,
-});
+// Câu 3 khởi tạo mảng chưa name và price
+const nameAndPriceList = products.map((product) => ({
+  name: product.name,
+  price: product.price,
+}));
 
-//  OBJECT 3
-let student3 = createStudent("Minh", "Le", 19, [6, 8, 7], {
-  year: 2007,
-  month: 9,
-  day: 23,
-});
+console.log(nameAndPriceList);
 
-// JSON DATA
-let jsonStudent1 = `{
-    "name": "Tung",
-    "family": "Nguyen",
-    "age": 18,
-    "scores": [9,10,8],
-    "birth": { "year": 2008, "month": 11, "day": 1 }
-}`;
+// Câu 4 lọc sản phẩm còn hàng trong kho
+const inStockProducts = products.filter((product) => product.quantity > 0);
 
-let jsonStudent2 = `{
-    "name": "Lan",
-    "family": "Tran",
-    "age": 20,
-    "scores": [8,7,9],
-    "birth": { "year": 2006, "month": 5, "day": 12 }
-}`;
+console.log(inStockProducts);
 
-let jsonStudent3 = `{
-    "name": "Minh",
-    "family": "Le",
-    "age": 19,
-    "scores": [6,8,7],
-    "birth": { "year": 2007, "month": 9, "day": 23 }
-}`;
+// Câu 5 kiểm tra sản phẩm có giá trên 30.000.000
+const hasExpensiveProduct = products.some(
+  (product) => product.price > 30000000,
+);
 
-// OUTPUT
-const output = document.getElementById("output");
+console.log(hasExpensiveProduct);
 
-function printStudent(student, index) {
-  output.textContent += `STUDENT ${index}\n`;
-  output.textContent += `Họ tên: ${student.getFullName()}\n`;
-  output.textContent += `Ngày sinh: ${student.getBirthDay()}\n`;
-  output.textContent += `Điểm TB: ${student.getAVGScore().toFixed(2)}\n`;
-  output.textContent += `---------------------------\n`;
+// Câu 6 Kiểm tra tất cả sản phẩm "Accessories" có đang bán không
+const allAccessoriesAvailable = products
+  .filter((product) => product.category === "Accessories")
+  .every((product) => product.isAvailable === true);
+
+console.log(allAccessoriesAvailable);
+
+// Câu 7 tính tổng giá trị kho
+const totalInventoryValue = products.reduce(
+  (total, product) => total + product.price * product.quantity,
+  0,
+);
+
+console.log(totalInventoryValue);
+
+// Câu 8 dùng for...of duyệt và in
+for (const product of products) {
+  console.log(
+    `${product.name} - ${product.category} - ${
+      product.isAvailable ? "Đang bán" : "Ngừng bán"
+    }`
+  );
 }
 
-printStudent(student1, 1);
-printStudent(student2, 2);
-printStudent(student3, 3);
+// Câu 9 dùng for...in
+for (const key in products[0]) {
+  console.log(key, ":", products[0][key]);
+}
 
-// PARSE JSON
-console.log(JSON.parse(jsonStudent1));
-console.log(JSON.parse(jsonStudent2));
-console.log(JSON.parse(jsonStudent3));
+// Câu 10 lấy danh sách tên sản phẩm đang bán & còn hàng
+const sellingAndInStockNames = products
+  .filter(product => product.isAvailable && product.quantity > 0)
+  .map(product => product.name);
+
+console.log(sellingAndInStockNames);
