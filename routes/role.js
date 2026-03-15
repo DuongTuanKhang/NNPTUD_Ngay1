@@ -10,33 +10,13 @@ router.post("/", async (req, res) => {
   res.json(result);
 });
 
-// GET ALL ROLE
+// GET ROLES
 router.get("/", async (req, res) => {
   const roles = await Role.find();
   res.json(roles);
 });
 
-// GET ROLE BY ID
-router.get("/:id", async (req, res) => {
-  const role = await Role.findById(req.params.id);
-  res.json(role);
-});
-
-// UPDATE ROLE
-router.put("/:id", async (req, res) => {
-  const role = await Role.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  res.json(role);
-});
-
-// DELETE ROLE
-router.delete("/:id", async (req, res) => {
-  const role = await Role.findByIdAndDelete(req.params.id);
-  res.json(role);
-});
-
-// GET USERS BY ROLE
+// GET ROLE USERS
 router.get("/:id/users", async (req, res) => {
   const users = await User.find({
     role: req.params.id,
