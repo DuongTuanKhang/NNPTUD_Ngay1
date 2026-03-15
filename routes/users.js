@@ -1,9 +1,96 @@
-var express = require('express');
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const User = require("../schemas/users");
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+
+// CREATE
+router.post("/", async (req, res) => {
+  try {
+    const user = new User(req.body);
+    const result = await user.save();
+    res.json(result);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
+
+
+// GET ALL
+router.get("/", async (req, res) => {
+  const users = await User.find({ deleted: false }).populate("role");
+  res.json(users);
+});
+
+
+// GET BY ID
+router.get("/:id", async (req, res) => {
+  const user = await User.findById(req.params.id).populate("role");
+  res.json(user);
+});
+
+
+// UPDATE
+router.put("/:id", async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(user);
+});
+
+
+// SOFT DELETE
+router.delete("/:id", async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { deleted: true },
+    { new: true }
+  );
+  res.json(user);
+});
+
+
+// ENABLE USER
+router.post("/enable", async (req, res) => {
+
+  const { email, username } = req.body;
+
+  const user = await User.findOne({
+    email,
+    username
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.status = true;
+  await user.save();
+
+  res.json(user);
+});
+
+
+// DISABLE USER
+router.post("/disable", async (req, res) => {
+
+  const { email, username } = req.body;
+
+  const user = await User.findOne({
+    email,
+    username
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.status = false;
+  await user.save();
+
+  res.json(user);
+});
+
 
 module.exports = router;
